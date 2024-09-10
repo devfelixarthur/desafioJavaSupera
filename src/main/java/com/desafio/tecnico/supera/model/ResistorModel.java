@@ -5,7 +5,6 @@ import com.desafio.tecnico.supera.enums.ResistorColor;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 public class ResistorModel {
     private String valorOhms;
     private List<ResistorColor> bandasDeCores;
