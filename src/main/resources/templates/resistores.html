@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Conversor de Resistores</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <button class="btn btn-secondary mb-4" onclick="voltarParaHome()">Voltar</button>
+
+    <h1>Conversor de Resistores</h1>
+
+    <form action="/converter">
+        <div class="form-group">
+            <label for="valorOhms">Digite o valor do resistor (ex: 47 ohms, 4.7k ohms, 1M ohms)</label>
+            <input type="text" id="valorOhms" name="valorOhms"
+                   class="form-control" required
+                   placeholder="Insira o valor do resistor" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Converter</button>
+    </form>
+
+    <div class="mt-3">
+        <p th:if="${errorMessage}" th:text="${errorMessage}" class="text-danger"></p>
+    </div>
+
+    <div class="mt-5">
+        <h3>Resultado:</h3>
+        <p th:text="${resultado.obterDescricaoCores()}" th:if="${resultado != null}"></p>
+    </div>
+</div>
+<script>
+    function voltarParaHome() {
+        window.location.href = '/';
+    }
+</script>
+</body>
+</html>
+
