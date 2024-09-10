@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matriz Caracol Dinâmica</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .matrix-input {
+            display: grid;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .matrix-cell {
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .matriz-box {
+            width: 50%;
+            height: auto;
+            min-height: 100px;
+            font-family: monospace;
+            margin-top: 20px;
+        }
+
+        .matrix-display {
+            font-family: monospace;
+            white-space: pre;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <button class="btn btn-secondary mb-4" onclick="voltarParaHome()">Voltar</button>
+    <h1>Gerar Matriz Dinâmica</h1>
+
+    <div class="form-group">
+        <label for="matrixSize">Tamanho da matriz quadrada (NxN):</label>
+        <input type="number" class="form-control" id="matrixSize" placeholder="Insira o tamanho da matriz" min="2">
+    </div>
+
+    <button class="btn btn-primary" onclick="gerarMatriz()">Gerar Matriz</button>
+    <button class="btn btn-danger" onclick="resetarMatriz()">Resetar</button>
+
+    <form id="matrizForm">
+        <div id="matrixContainer" class="matrix-input"></div>
+        <button type="button" class="btn btn-success mt-3" onclick="exibirMatriz()">Enviar Matriz</button>
+    </form>
+
+    <div class="mt-5">
+        <h3>Matriz Enviada:</h3>
+        <textarea id="matrizEnviada" class="form-control matriz-box" disabled></textarea>
+
+        <h3 class="mt-3">Resultado Ordenado (Caracol):</h3>
+        <p id="resultadoCaracol"></p>
+    </div>
+</div>
+
+<script>
+    function gerarMatriz() {
+        const matrixSize = document.getElementById("matrixSize").value;
+        const matrixContainer = document.getElementById("matrixContainer");
+        matrixContainer.style.gridTemplateColumns = `repeat(${matrixSize}, 50px)`;
+        matrixContainer.innerHTML = '';
+        for (let i = 0; i < matrixSize; i++) {
+            for (let j = 0; j < matrixSize; j++) {
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.name = `matriz[${i}][${j}]`;
+                input.classList.add('matrix-cell');
+                input.required = true;
+                matrixContainer.appendChild(input);
+            }
+        }
+    }
+
+    function exibirMatriz() {
+        const matrixSize = document.getElementById("matrixSize").value;
+        let matrizText = "";
+        let matrizArray = [];
+
+        for (let i = 0; i < matrixSize; i++) {
+            let linha = "";
+            let row = [];
+
+            for (let j = 0; j < matrixSize; j++) {
+                const valor = document.querySelector(`input[name="matriz[${i}][${j}]"]`).value;
+                linha += valor + "\t";
+                row.push(valor);
+            }
+
+            matrizText += linha.trim() + "\n";
+            matrizArray.push(row);
+        }
+
+        document.getElementById("matrixSize").value = '';
+        document.getElementById("matrixContainer").innerHTML = '';
+        document.getElementById("matrizEnviada").value = matrizText.trim();
+
+        processarCaracol(matrizArray);
+    }
+
+    function processarCaracol(matrizArray) {
+        const resultado = [];
+        let top = 0, bottom = matrizArray.length - 1;
+        let left = 0, right = matrizArray[0].length - 1;
+
+        while (top <= bottom && left <= right) {
+            for (let i = left; i <= right; i++) {
+                resultado.push(matrizArray[top][i]);
+            }
+            top++;
+
+            for (let i = top; i <= bottom; i++) {
+                resultado.push(matrizArray[i][right]);
+            }
+            right--;
+
+            if (top <= bottom) {
+                for (let i = right; i >= left; i--) {
+                    resultado.push(matrizArray[bottom][i]);
+                }
+                bottom--;
+            }
+
+            if (left <= right) {
+                for (let i = bottom; i >= top; i--) {
+                    resultado.push(matrizArray[i][left]);
+                }
+                left++;
+            }
+        }
+
+        document.getElementById("resultadoCaracol").innerText = resultado.join(", ");
+    }
+
+    function resetarMatriz() {
+        document.getElementById("matrixSize").value = '';
+        document.getElementById("matrixContainer").innerHTML = '';
+        document.getElementById("matrizEnviada").value = '';
+        document.getElementById("resultadoCaracol").innerText = '';
+    }
+
+    function voltarParaHome() {
+        window.location.href = '/';
+    }
+</script>
+</body>
+</html>
